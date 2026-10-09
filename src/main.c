@@ -3,6 +3,7 @@
 #include <string.h>
 #include "ast.h"
 #include "semantic.h"
+#include "tac.h"
 
 extern FILE *yyin;
 extern int yyparse(void);
@@ -35,7 +36,7 @@ int main(int argc, char **argv) {
     printf(" Source: %s\n", filename);
     printf("==================================================\n\n");
 
-    printf("---- Phase 1: Lexical + Syntax Analysis ----\n");
+    printf("---- Lexical & Syntax Analysis ----\n");
     int parse_result = yyparse();
     fclose(yyin);
 
@@ -54,7 +55,7 @@ int main(int argc, char **argv) {
         printf("\n");
     }
 
-    printf("---- Phase 2: Semantic Analysis ----\n");
+    printf("---- Semantic Analysis ----\n");
     semantic_analyze(ast_root);
     printf("Semantic errors : %d\n", semantic_error_count);
 
@@ -62,6 +63,8 @@ int main(int argc, char **argv) {
         printf("\nSemantic analysis completed successfully: no errors found.\n");
     } else {
         printf("\nSemantic analysis completed with %d error(s).\n", semantic_error_count);
+        ast_free(ast_root);
+        return 1;
     }
 
     if (show_ast) {
@@ -69,6 +72,11 @@ int main(int argc, char **argv) {
         ast_print(ast_root, 0);
     }
 
+    printf("\n---- Intermediate Code Generation (Three-Address Code) ----\n");
+    tac_generate(ast_root);
+    tac_print();
+
+    tac_reset();
     ast_free(ast_root);
-    return (semantic_error_count > 0) ? 1 : 0;
+    return 0;
 }

@@ -17,10 +17,10 @@ $(BUILD)/parser.tab.c $(BUILD)/parser.tab.h: $(SRC)/parser.y | $(BUILD)
 $(BUILD)/lex.yy.c: $(SRC)/lexer.l $(BUILD)/parser.tab.h | $(BUILD)
 	flex -o $(BUILD)/lex.yy.c $(SRC)/lexer.l
 
-$(TARGET): $(BUILD)/parser.tab.c $(BUILD)/lex.yy.c $(SRC)/ast.c $(SRC)/symtab.c $(SRC)/semantic.c $(SRC)/main.c
+$(TARGET): $(BUILD)/parser.tab.c $(BUILD)/lex.yy.c $(SRC)/ast.c $(SRC)/symtab.c $(SRC)/semantic.c $(SRC)/tac.c $(SRC)/main.c
 	$(CC) $(CFLAGS) -I$(SRC) -I$(BUILD) -o $(TARGET) \
 		$(BUILD)/parser.tab.c $(BUILD)/lex.yy.c \
-		$(SRC)/ast.c $(SRC)/symtab.c $(SRC)/semantic.c $(SRC)/main.c
+		$(SRC)/ast.c $(SRC)/symtab.c $(SRC)/semantic.c $(SRC)/tac.c $(SRC)/main.c
 
 clean:
 	rm -rf $(BUILD) $(TARGET)
